@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.andengine.extension.tmx.TMXLoader.ITMXTilePropertiesListener;
+import org.andengine.extension.tmx.TMXObject.TmxType;
 import org.andengine.extension.tmx.util.constants.TMXConstants;
 import org.andengine.extension.tmx.util.exception.TMXParseException;
 import org.andengine.extension.tmx.util.exception.TSXLoadException;
@@ -178,17 +179,19 @@ public class TMXParser extends DefaultHandler implements TMXConstants {
             TMXObjectGroup currObjectGroup = tmxObjectGroups.get(tmxObjectGroups.size() - 1);
             TMXObject currObject = currObjectGroup.getTMXObjects().get(currObjectGroup.getTMXObjects().size() - 1);
             currObject.setTMXObjectPolygon(pAttributes.getValue("", TMXConstants.TAG_POLYLINE_POINTS));
+            currObject.setType(TmxType.POLYGON);
         } else if (pLocalName.equals(TMXConstants.TAG_POLYLINE)) {
             this.mInPolyline = true;
             final ArrayList<TMXObjectGroup> tmxObjectGroups = this.mTMXTiledMap.getTMXObjectGroups();
             TMXObjectGroup currObjectGroup = tmxObjectGroups.get(tmxObjectGroups.size() - 1);
             TMXObject currObject = currObjectGroup.getTMXObjects().get(currObjectGroup.getTMXObjects().size() - 1);
             currObject.setTMXObjectPolyline(pAttributes.getValue("", TMXConstants.TAG_POLYLINE_POINTS));
+            currObject.setType(TmxType.POLYLINE);
         } else if (pLocalName.equals(TMXConstants.TAG_ELLIPSE)) {
             final ArrayList<TMXObjectGroup> tmxObjectGroups = this.mTMXTiledMap.getTMXObjectGroups();
             TMXObjectGroup currObjectGroup = tmxObjectGroups.get(tmxObjectGroups.size() - 1);
             TMXObject currObject = currObjectGroup.getTMXObjects().get(currObjectGroup.getTMXObjects().size() - 1);
-            currObject.setEllipse(true);
+            currObject.setType(TmxType.ELLIPSE);
         } else {
             throw new TMXParseException("Unexpected start tag: '" + pLocalName + "'.");
         }
@@ -239,6 +242,7 @@ public class TMXParser extends DefaultHandler implements TMXConstants {
             this.mInPolygon = false;
         } else if (pLocalName.equals(TMXConstants.TAG_POLYLINE)) {
             this.mInPolyline = false;
+        } else if (pLocalName.equals(TMXConstants.TAG_ELLIPSE)) {
         } else {
             throw new TMXParseException("Unexpected end tag: '" + pLocalName + "'.");
         }

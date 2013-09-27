@@ -138,10 +138,19 @@ public class TMXObject implements TMXConstants {
     }
 
 
+    @Override
+    public String toString() {
+        return "TMXObject [mType=" + mType + ", mName=" + mName + ", mX=" + mX + ", mY=" + mY + ", mWidth=" + mWidth
+                + ", mHeight=" + mHeight + ", mTMXObjectProperties=" + mTMXObjectProperties + ", mTMXObjectPolyline="
+                + mTMXObjectPolyline + "]";
+    }
+
+
     // ===========================================================
     // Methods for/from SuperClass/Interfaces
     // ===========================================================
 
+    
     // ===========================================================
     // Methods
     // ===========================================================
