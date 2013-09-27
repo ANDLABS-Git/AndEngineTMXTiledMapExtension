@@ -20,16 +20,25 @@ public class TMXObject implements TMXConstants {
     // Constants
     // ===========================================================
 
+    public enum TmxType {
+        POLYGON,
+        POLYLINE,
+        ELLIPSE,
+        RECTANGLE
+    };
+
     // ===========================================================
     // Fields
     // ===========================================================
 
+    private TmxType mType = TmxType.RECTANGLE;
+
     private final String mName;
-    private final String mType;
     private final int mX;
     private final int mY;
     private final int mWidth;
     private final int mHeight;
+
     private final TMXProperties<TMXObjectProperty> mTMXObjectProperties = new TMXProperties<TMXObjectProperty>();
 
     private final LinkedList<Pair<Integer, Integer>> mTMXObjectPolyline = new LinkedList<Pair<Integer, Integer>>();
@@ -41,7 +50,6 @@ public class TMXObject implements TMXConstants {
 
     public TMXObject(final Attributes pAttributes) {
         this.mName = pAttributes.getValue("", TMXConstants.TAG_OBJECT_ATTRIBUTE_NAME);
-        this.mType = pAttributes.getValue("", TMXConstants.TAG_OBJECT_ATTRIBUTE_TYPE);
         this.mX = SAXUtils.getIntAttributeOrThrow(pAttributes, TMXConstants.TAG_OBJECT_ATTRIBUTE_X);
         this.mY = SAXUtils.getIntAttributeOrThrow(pAttributes, TMXConstants.TAG_OBJECT_ATTRIBUTE_Y);
         this.mWidth = SAXUtils.getIntAttribute(pAttributes, TMXConstants.TAG_OBJECT_ATTRIBUTE_WIDTH, 0);
@@ -58,8 +66,13 @@ public class TMXObject implements TMXConstants {
     }
 
 
-    public String getType() {
+    public TmxType getType() {
         return this.mType;
+    }
+
+
+    public void setType(TmxType pType) {
+        this.mType = pType;
     }
 
 
@@ -123,6 +136,7 @@ public class TMXObject implements TMXConstants {
     public LinkedList<Pair<Integer, Integer>> getTMXObjectPolyline() {
         return this.mTMXObjectPolyline;
     }
+
 
     // ===========================================================
     // Methods for/from SuperClass/Interfaces

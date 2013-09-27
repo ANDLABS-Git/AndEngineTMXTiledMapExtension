@@ -80,7 +80,11 @@ public interface TMXConstants {
 	
 	public static final String TAG_POLYGON = "polygon";
 	public static final String TAG_POLYLINE = "polyline";
-	public static final String TAG_POLYLINE_POINTS = "points";
+    public static final String TAG_POLYLINE_POINTS = "points";
+    public static final String TAG_ELLIPSE = "ellipse";
+	
+	
+	
 
 	// ===========================================================
 	// Methods

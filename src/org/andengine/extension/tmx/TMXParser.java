@@ -184,6 +184,11 @@ public class TMXParser extends DefaultHandler implements TMXConstants {
             TMXObjectGroup currObjectGroup = tmxObjectGroups.get(tmxObjectGroups.size() - 1);
             TMXObject currObject = currObjectGroup.getTMXObjects().get(currObjectGroup.getTMXObjects().size() - 1);
             currObject.setTMXObjectPolyline(pAttributes.getValue("", TMXConstants.TAG_POLYLINE_POINTS));
+        } else if (pLocalName.equals(TMXConstants.TAG_ELLIPSE)) {
+            final ArrayList<TMXObjectGroup> tmxObjectGroups = this.mTMXTiledMap.getTMXObjectGroups();
+            TMXObjectGroup currObjectGroup = tmxObjectGroups.get(tmxObjectGroups.size() - 1);
+            TMXObject currObject = currObjectGroup.getTMXObjects().get(currObjectGroup.getTMXObjects().size() - 1);
+            currObject.setEllipse(true);
         } else {
             throw new TMXParseException("Unexpected start tag: '" + pLocalName + "'.");
         }
