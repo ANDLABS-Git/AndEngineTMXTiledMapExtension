@@ -77,6 +77,10 @@ public interface TMXConstants {
 	public static final String TAG_OBJECT_ATTRIBUTE_Y = "y";
 	public static final String TAG_OBJECT_ATTRIBUTE_WIDTH = "width";
 	public static final String TAG_OBJECT_ATTRIBUTE_HEIGHT = "height";
+	
+	public static final String TAG_POLYGON = "polygon";
+	public static final String TAG_POLYLINE = "polyline";
+	public static final String TAG_POLYLINE_POINTS = "points";
 
 	// ===========================================================
 	// Methods

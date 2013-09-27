@@ -4,8 +4,6 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
-import java.util.zip.InflaterInputStream;
 import java.util.zip.GZIPInputStream;
 
 import org.andengine.engine.camera.Camera;
@@ -223,19 +221,12 @@ public class TMXLayer extends SpriteBatch implements TMXConstants {
 			InputStream in = new ByteArrayInputStream(pDataString.getBytes("UTF-8"));
 
 			/* Wrap decoding Streams if necessary. */
-			if(pDataEncoding != null) {
-				if(pDataEncoding.equals(TMXConstants.TAG_DATA_ATTRIBUTE_ENCODING_VALUE_BASE64)) {
-					in = new Base64InputStream(in, Base64.DEFAULT);
-				} else {
-					throw new IllegalArgumentException("Supplied encoding '" + pDataEncoding + "' is not supported yet.");
-				}
+			if(pDataEncoding != null && pDataEncoding.equals(TMXConstants.TAG_DATA_ATTRIBUTE_ENCODING_VALUE_BASE64)) {
+				in = new Base64InputStream(in, Base64.DEFAULT);
 			}
-
-			if(pDataCompression != null) {
+			if(pDataCompression != null){
 				if(pDataCompression.equals(TMXConstants.TAG_DATA_ATTRIBUTE_COMPRESSION_VALUE_GZIP)) {
 					in = new GZIPInputStream(in);
-				} else if(pDataCompression.equals(TMXConstants.TAG_DATA_ATTRIBUTE_COMPRESSION_VALUE_ZLIB)) {
-					in = new InflaterInputStream(in);
 				} else {
 					throw new IllegalArgumentException("Supplied compression '" + pDataCompression + "' is not supported yet.");
 				}
@@ -266,26 +257,28 @@ public class TMXLayer extends SpriteBatch implements TMXConstants {
 			tmxTileTextureRegion = null;
 		} else {
 			tmxTileTextureRegion = tmxTiledMap.getTextureRegionFromGlobalTileID(pGlobalTileID);
+
+			if(this.mTexture == null) {
+				this.mTexture = tmxTileTextureRegion.getTexture();
+				super.initBlendFunction(this.mTexture);
+			} else {
+				if(!this.mTexture.equals( tmxTileTextureRegion.getTexture())) {
+					throw new AndEngineRuntimeException("All TMXTiles in a TMXLayer need to be in the same TMXTileSet.");
+				}
+			}
 		}
+
 		final int tileHeight = this.mTMXTiledMap.getTileHeight();
 		final int tileWidth = this.mTMXTiledMap.getTileWidth();
 
-		if(this.mTexture == null) {
-			this.mTexture = tmxTileTextureRegion.getTexture();
-			super.initBlendFunction(this.mTexture);
-		} else {
-			if(this.mTexture != tmxTileTextureRegion.getTexture()) {
-				throw new AndEngineRuntimeException("All TMXTiles in a TMXLayer need to be in the same TMXTileSet.");
-			}
-		}
 		final TMXTile tmxTile = new TMXTile(pGlobalTileID, column, row, tileWidth, tileHeight, tmxTileTextureRegion);
 		tmxTiles[row][column] = tmxTile;
 
-		this.setIndex(this.getSpriteBatchIndex(column, row));
-		this.drawWithoutChecks(tmxTileTextureRegion, tmxTile.getTileX(), tmxTile.getTileY(), tileWidth, tileHeight, Color.WHITE_ABGR_PACKED_FLOAT);
-		this.submit(); // TODO Doesn't need to be called here, but should rather be called in a "init" step, when parsing the XML is complete.
-
 		if(pGlobalTileID != 0) {
+			this.setIndex(this.getSpriteBatchIndex(column, row));
+			this.drawWithoutChecks(tmxTileTextureRegion, tmxTile.getTileX(), tmxTile.getTileY(), tileWidth, tileHeight, Color.WHITE_ABGR_PACKED_FLOAT);
+			this.submit(); // TODO Doesn't need to be called here, but should rather be called in a "init" step, when parsing the XML is complete.
+
 			/* Notify the ITMXTilePropertiesListener if it exists. */
 			if(pTMXTilePropertyListener != null) {
 				final TMXProperties<TMXTileProperty> tmxTileProperties = tmxTiledMap.getTMXTileProperties(pGlobalTileID);
